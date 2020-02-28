@@ -6,4 +6,6 @@
 # @File    : __init__.py.py
 # @Software: PyCharm
 
-__all__ = ['tool', 'logtool', 'pathtool']
+__all__ = ['tool']
+
+from .tool import *
