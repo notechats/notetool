@@ -6,6 +6,6 @@
 # @File    : __init__.py.py
 # @Software: PyCharm
 
-__all__ = ['tool']
 
+from .download import download
 from .tool import *

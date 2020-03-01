@@ -77,8 +77,3 @@ def merge_file(path):
     os.system('del /Q *.ts')
     os.system('del /Q *.mp4')
     os.rename("new.tmp", "new.mp4")
-
-
-if __name__ == '__main__':
-    url = "http://www.meituii.space/20190320/Rjj9shCU/index.m3u8"
-    download(url)

@@ -1,4 +1,3 @@
-# coding: utf-8
 import os
 import queue
 import sqlite3
@@ -11,7 +10,7 @@ import requests
 from Crypto.Cipher import AES
 from requests.adapters import HTTPAdapter
 
-from notetool.logtool import log
+from notetool import log
 
 logger = log('download')
 headers = {

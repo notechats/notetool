@@ -1,31 +1,33 @@
-import logging
 import os
 
-logger = logging.getLogger(__name__)
+from notetool.tool import log
 
-__all__ = ['exists', 'exist_and_create', 'exists_file', 'exists_path', 'meta', 'list_file', 'LocalPath',
-           'delete_file', 'join_path'
+logger = log(__name__)
+
+__all__ = ['exists', 'exist_and_create', 'exists_file', 'exists_dir', 'meta', 'list_file', 'LocalPath',
+           'delete_file', 'join_path', 'path_parse', 'path_join', 'file_path', 'file_name'
            ]
 
 
-def join_path(child_path, parent_path=None):
-    if child_path is None:
-        cwd = os.getcwd()
-        if parent_path is None:
-            return cwd
-        else:
-            return join_path(parent_path, cwd)
-    else:
-        if not child_path.startswith('/'):
-            cwd = os.getcwd()
-            if parent_path is None:
-                parent_path = os.getcwd()
-            elif not parent_path.startswith('/'):
-                parent_path = os.path.join(parent_path, cwd)
+def path_parse(path):
+    if path is None:
+        return path
+    # ~处理
+    path = os.path.expanduser(path)
+    if not path.startswith('/'):
+        return os.path.join(os.getcwd(), path)
+    return path
 
-            return os.path.join(child_path, parent_path)
-        else:
-            return child_path
+
+def path_join(parent_path, child_path):
+    parent_path = path_parse(parent_path)
+
+    return os.path.join(parent_path, child_path)
+    pass
+
+
+def join_path(child_path, parent_path=None):
+    return path_join(parent_path, child_path)
 
 
 def delete_file(file_path):
@@ -34,7 +36,7 @@ def delete_file(file_path):
         os.remove(file_path)
 
 
-def exists_path(file_dir, mkdir=False):
+def exists_dir(file_dir, mkdir=False):
     return exists(file_dir=file_dir, mkdir=mkdir, mode='path')
 
 
@@ -53,8 +55,8 @@ def exists(file_path=None, file_dir=None, file_name=None, mode='file', mkdir=Fal
     :return: 是否存在
     """
 
-    file_path = join_path(file_path)
-    file_dir = join_path(file_dir)
+    file_path = path_parse(file_path)
+    file_dir = path_parse(file_dir)
 
     if mode == 'file':
         if file_path is not None:
@@ -96,6 +98,14 @@ def exist_and_create(file_dir):
 
     os.makedirs(file_dir)
     return
+
+
+def file_path(path):
+    return os.path.dirname(path)
+
+
+def file_name(path):
+    return os.path.basename(path)
 
 
 def makedirs(name, mode=0o777, exist_ok=False):
@@ -237,15 +247,3 @@ class LocalPath:
             'isdir': True if file_name is None else False,
             'deep': deep
         }
-
-
-source_file = [
-    '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-1.csv'
-    , '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-2.csv'
-    , '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-3.csv'
-    , '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-4.csv'
-    , '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-5.csv'
-    , '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv-split-6.csv'
-]
-target_file = '/Users/liangtaoniu/workspace/MyDiary/tmp/dataset/data-science-bowl-2019/train.csv'
-merge_file(source_file, target_file)

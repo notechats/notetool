@@ -152,20 +152,3 @@ class M3u8Download:
         shutil.rmtree(f"{self.save_dir}/ts")  # 合并成功后，删除 .ts 文件
         os.remove(f"{self.save_dir}/new_{self.save_dir}.m3u8")  # 合并成功后，删除 .m3u8 文件
         print(f"\n{'合并完成':=^20}")
-
-
-if __name__ == "__main__":
-    M3U8_URL = 'http://www.meituii.space/20190320/Rjj9shCU/index.m3u8'
-    SAVE_DIR = '/Users/liangtaoniu/Downloads/crack'
-    MAX_WORKERS = 64  # 线程数，你的网速、服务器的网速跟不上，再大也没用。不要盲目加大
-    CE_VERIFY = True  # ce证书验证开关,当为False时忽略安全性,出现CERTIFICATE_VERIFY_FAILED时按需改为False
-    M3u8Download(M3U8_URL, SAVE_DIR, MAX_WORKERS, CE_VERIFY)
-
-    # 多任务同时个下载
-    # M3U8_URL_LIST = ['url1', 'url2', 'url3', ...]
-    # SAVE_DIR_LIST = ['dir1', 'dir2', 'dir3', ...]
-    # MAX_WORKERS_A = 5  # 同时任务数
-    # MAX_WORKERS_B = 64  # 每个任务的线程数
-    # with ThreadPoolExecutorWithQueueSizeLimit(MAX_WORKERS_A) as pool:
-    #     for M3U8_URL, SAVE_DIR in zip(M3U8_URL_LIST, SAVE_DIR_LIST):
-    #         pool.submit(M3u8Download, M3U8_URL, SAVE_DIR, MAX_WORKERS_B)
