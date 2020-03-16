@@ -5,8 +5,12 @@ from notetool.tool import log
 logger = log(__name__)
 
 __all__ = ['exists', 'exist_and_create', 'exists_file', 'exists_dir', 'meta', 'list_file', 'LocalPath',
-           'delete_file', 'join_path', 'path_parse', 'path_join', 'file_path', 'file_name'
+           'delete_file', 'join_path', 'path_parse', 'path_join', '_file_path', '_file_name'
            ]
+
+
+def info(msg):
+    logger.info(msg)
 
 
 def path_parse(path):
@@ -100,11 +104,11 @@ def exist_and_create(file_dir):
     return
 
 
-def file_path(path):
+def _file_path(path):
     return os.path.dirname(path)
 
 
-def file_name(path):
+def _file_name(path):
     return os.path.basename(path)
 
 
@@ -152,7 +156,6 @@ def list_file(file_dir, deep=1):
 
 def merge_file(source_file, target_file):
     flag = 0  # 计数器
-    name = 1  # 文件名
 
     info("开始。。。。。")
 
@@ -168,7 +171,7 @@ def merge_file(source_file, target_file):
 
 
 def split_file(source_file, target_dir, max_line=2000000):
-    file_name = os.path.basename(source_file)
+    file_name = _file_name(source_file)
     flag = 0  # 计数器
     name = 1  # 文件名
 
