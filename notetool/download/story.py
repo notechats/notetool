@@ -23,6 +23,10 @@ headers = {
 }
 
 
+def info(msg):
+    logger.info(msg)
+
+
 def get_session(pool_connections, pool_maxsize, max_retries):
     """构造session"""
     session = requests.Session()

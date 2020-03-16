@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from notetool.download.m3u8 import m3u8Dataset
-from notetool.logtool import log
 from notetool.tool import decrypt
+from notetool.tool import log
 
 logger = log('download')
 
