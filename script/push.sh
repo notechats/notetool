@@ -3,4 +3,4 @@ git add -A
 git commit -a -m "add"
 git push
 
-pip install git+https://github.com/notechats/notetool.git -U
+#pip install git+https://github.com/notechats/notetool.git -U
