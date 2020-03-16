@@ -32,7 +32,7 @@ def join_path(child_path, parent_path=None):
 
 def delete_file(file_path):
     if exists_file(file_path):
-        logger.info('file exist and delete')
+        info('file exist and delete')
         os.remove(file_path)
 
 
@@ -154,7 +154,7 @@ def merge_file(source_file, target_file):
     flag = 0  # 计数器
     name = 1  # 文件名
 
-    logger.info("开始。。。。。")
+    info("开始。。。。。")
 
     with open(target_file, 'w+') as write_file:
         for file_path in source_file:
@@ -163,8 +163,8 @@ def merge_file(source_file, target_file):
                     write_file.write(line)
             write_file.write('\n')
 
-    logger.info('done ' + str(flag) + '\t' + target_file)
-    logger.info("完成。。。。。")
+    info('done ' + str(flag) + '\t' + target_file)
+    info("完成。。。。。")
 
 
 def split_file(source_file, target_dir, max_line=2000000):
@@ -172,7 +172,7 @@ def split_file(source_file, target_dir, max_line=2000000):
     flag = 0  # 计数器
     name = 1  # 文件名
 
-    logger.info("开始。。。。。")
+    info("开始。。。。。")
 
     def get_filename():
         return str(target_dir) + file_name + '-split-' + str(name) + '.csv'
@@ -186,15 +186,15 @@ def split_file(source_file, target_dir, max_line=2000000):
             write_file.write(line)
 
             if flag == max_line:
-                logger.info('done ' + str(flag) + '\t' + get_filename())
+                info('done ' + str(flag) + '\t' + get_filename())
                 name += 1
                 flag = 0
 
                 write_file.close()
                 write_file = open(get_filename(), 'w+')
     write_file.close()
-    logger.info('done ' + str(flag) + '\t' + get_filename())
-    logger.info("完成。。。。。")
+    info('done ' + str(flag) + '\t' + get_filename())
+    info("完成。。。。。")
 
 
 class LocalPath:

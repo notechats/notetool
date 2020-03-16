@@ -13,6 +13,10 @@ logger = log(__name__)
 __all__ = ['BaseDownLoad', 'MultiThreadDownload', 'PyCurlDownLoad', 'download']
 
 
+def info(msg):
+    logger.info(msg)
+
+
 class BaseDownLoad:
     def __init__(self, url, path, overwrite=False):
         self.url = url
@@ -25,12 +29,12 @@ class BaseDownLoad:
             if self.overwrite:
                 delete_file(file_path=self.path)
             else:
-                logger.info('file exist and return[path={}].'.format(self.path))
+                info('file exist and return[path={}].'.format(self.path))
                 return
 
-        logger.info("downloading from " + self.url + " to " + self.path)
+        info("downloading from " + self.url + " to " + self.path)
         self._download()
-        logger.info('download success')
+        info('download success')
 
     def _download(self):
         pass
@@ -62,7 +66,7 @@ class MultiThreadDownload(BaseDownLoad):
             logger.warning("该url已重定向至{}".format(self.url))
             r = requests.head(self.url)
         self.size = int(r.headers['Content-Length'])
-        logger.info('该文件大小为：{} bytes'.format(self.size))
+        info('该文件大小为：{} bytes'.format(self.size))
 
         # 创建一个和要下载文件一样大小的文件
         fp = open(self.path, "wb")
@@ -79,7 +83,7 @@ class MultiThreadDownload(BaseDownLoad):
                 end = self.size
             else:
                 end = start + part - 1
-                logger.info('{}->{}'.format(start, end))
+                info('{}->{}'.format(start, end))
             futures.append(pool.submit(self.down, start, end))
         concurrent.futures.wait(futures)
 

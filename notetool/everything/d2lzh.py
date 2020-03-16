@@ -623,7 +623,7 @@ def train_and_predict_rnn_gluon(model, num_hiddens, vocab_size, ctx,
                 y = Y.T.reshape((-1,))
                 l = loss(output, y).mean()
             l.backward()
-            params = [p.data() for p in model.collect_params().values()]
+            params = [p.data_mock() for p in model.collect_params().values()]
             grad_clipping(params, clipping_theta, ctx)
             trainer.step(1)
             l_sum += l.asscalar() * y.size

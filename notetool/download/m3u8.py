@@ -334,15 +334,15 @@ class m3u8Downloader:
                         file.ts_list.append(urllib.parse.urljoin(file.url, line.strip()))
                 if file.ts_list:
                     file.count_total = len(file.ts_list)
-                    logger.info('ts的总数量为：' + str(file.count_total) + '个')
+                    info('ts的总数量为：' + str(file.count_total) + '个')
 
-                    logger.info('开始下载文件')
+                    info('开始下载文件')
                     res = self.download(file)
 
                     if res:
-                        logger.info('开始合并文件')
+                        info('开始合并文件')
                         file.merge_file()
-                        logger.info("下载完成")
+                        info("下载完成")
 
                     else:
                         logger.warn('下载失败')
