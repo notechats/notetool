@@ -1,4 +1,5 @@
 import concurrent.futures
+import os
 from threading import Lock
 
 import pycurl
@@ -31,10 +32,10 @@ class BaseDownLoad:
             else:
                 info('file exist and return[path={}].'.format(self.path))
                 return
-
-        info("downloading from " + self.url + " to " + self.path)
+        file_name = os.path.basename(self.path)
+        info("download {} from {} to {} ".format(file_name, self.url, self.path))
         self._download()
-        info('download success')
+        info('download {} success'.format(file_name))
 
     def _download(self):
         pass

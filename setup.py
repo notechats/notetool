@@ -8,7 +8,7 @@
 
 from setuptools import setup, find_packages
 
-install_requires = ['IPython', 'matplotlib', 'pycurl', 'cryptography']
+install_requires = ['IPython', 'matplotlib', 'pycurl', 'cryptography', 'six']
 
 setup(name='notetool',
       version='0.0.3',
