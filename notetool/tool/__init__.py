@@ -1,3 +1,4 @@
-from .logtool import log
-from .pathtool import *
+from .log import log
+from .path import *
+from .secret import *
 from .tool import *

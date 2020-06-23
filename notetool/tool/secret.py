@@ -1,12 +1,12 @@
 import hashlib
-import logging
 import os
 
 from cryptography.fernet import Fernet
 
-__all__ = ['encrypt', 'decrypt', 'SecretManage', 'get_file_md5', 'local_secret_path',
-           'set_secret_path']
+from notetool.tool.logtool import log
+
 local_secret_path = '~/.secret'
+logger = log('tool')
 
 
 def set_secret_path(path):
@@ -77,9 +77,6 @@ class SecretManage(object):
         """
         if os.path.exists(self.secret_path):
             os.remove(self.secret_path)
-
-
-logger = logging.getLogger('tool')
 
 
 def get_fernet(cipher_key=None):
