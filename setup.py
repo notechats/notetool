@@ -1,3 +1,5 @@
+import sys
+
 from setuptools import setup, find_packages
 
 
@@ -25,7 +27,7 @@ def get_version(argv):
     return version3
 
 
-version = get_version(['a', 'build'])
+version = get_version(sys.argv)
 
 install_requires = ['IPython', 'matplotlib', 'pycurl', 'cryptography', 'six']
 
