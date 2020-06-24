@@ -21,18 +21,16 @@ class BaseTable:
         raise Exception("还没有实现")
 
     def insert(self, properties: dict):
-        if self.columns is None:
-            raise Exception("origin_keys cannot be None")
-        keys = []
-        values = []
-        for key in self.columns:
-            value = str(properties.get(key, '')).replace("'", '')
-            if len(key) > 0 and len(value) > 0:
-                keys.append(key)
-                values.append("'{}'".format(value))
+        keys, values = self._properties2kv(properties)
 
         sql = """insert or ignore into {} ({}) values ({})""".format(self.table_name, ', '.join(keys),
                                                                      ', '.join(values))
+        return self.execute(sql)
+
+    def update(self, properties: dict, condition: dict):
+        equal = self._properties2equal(properties)
+        equal2 = self._properties2equal(condition)
+        sql = """update  {} set {} where {}""".format(self.table_name, ', '.join(equal), ' and '.join(equal2))
         return self.execute(sql)
 
     def count(self, properties: dict):
@@ -55,6 +53,31 @@ class BaseTable:
 
         rows = self.execute(sql)
         return [] if rows is None else [row for row in rows]
+
+    def _properties2kv(self, properties: dict):
+        if self.columns is None:
+            raise Exception("origin_keys cannot be None")
+        keys = []
+        values = []
+        for key in self.columns:
+            value = str(properties.get(key, '')).replace("'", '')
+            if len(key) > 0 and len(value) > 0:
+                keys.append(key)
+                values.append("'{}'".format(value))
+        return keys, values
+
+    def _properties2equal(self, properties: dict):
+        if self.columns is None:
+            raise Exception("origin_keys cannot be None")
+        equals = []
+        for key in self.columns:
+            value = properties.get(key, None)
+            if len(key) > 0 and value is not None:
+                if isinstance(value, str):
+                    equals.append("{}='{}'".format(key, value))
+                else:
+                    equals.append("{}={}".format(key, value))
+        return equals
 
 
 class SqliteTable(BaseTable):

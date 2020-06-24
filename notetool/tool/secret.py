@@ -3,7 +3,7 @@ import os
 
 from cryptography.fernet import Fernet
 
-from notetool.tool.logtool import log
+from notetool.tool.log import log
 
 local_secret_path = '~/.secret'
 logger = log('tool')
