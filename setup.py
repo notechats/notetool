@@ -1,26 +1,22 @@
 import sys
+from os import path
 
 from setuptools import setup, find_packages
 
 
 def get_version(argv):
-    if len(argv) <= 1:
-        return
-    if argv[1] != 'build':
-        return
-    from os import path
     here = path.abspath(path.dirname(__file__))
     version_path = path.join(here, '__version__.md')
-    if path.exists(version_path):
-        with open(version_path, 'r') as f:
-            version1 = [int(i) for i in f.read().split('.')]
-    else:
-        version1 = [0, 0, 1]
-    version2 = version1[0] * 100 + version1[1] * 10 + version1[2] + 1
+    with open(version_path, 'r') as f:
+        version1 = [int(i) for i in f.read().split('.')]
 
-    version1[2] = version2 % 10
-    version1[1] = int(version2 / 10) % 10
-    version1[0] = int(version2 / 100)
+    if len(argv) >= 2 and argv[1] == 'build':
+        version2 = version1[0] * 100 + version1[1] * 10 + version1[2] + 1
+
+        version1[2] = version2 % 10
+        version1[1] = int(version2 / 10) % 10
+        version1[0] = int(version2 / 100)
+
     version3 = '{}.{}.{}'.format(*version1)
     with open(version_path, 'w') as f:
         f.write(version3)
