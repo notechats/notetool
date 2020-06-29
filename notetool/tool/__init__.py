@@ -1,3 +1,4 @@
+from .build import get_version, version_add
 from .log import log
 from .path import *
 from .secret import *
