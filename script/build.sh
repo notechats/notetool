@@ -26,6 +26,7 @@ fi
 
 if [ "$1" = "install" ]; then
   echo build
+  pip uninstall $name
   python setup.py install
 
   rm -rf $name.egg-info
