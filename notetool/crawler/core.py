@@ -14,7 +14,6 @@ class Node(Thread):
     def __init__(self, interval=10, queue_size=2):
         Thread.__init__(self)
         self.logger = log("crawler")
-        self.logger.setLevel(logging.DEBUG)
         self.logger.setLevel(logging.INFO)
 
         self.interval = interval
