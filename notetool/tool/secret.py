@@ -3,6 +3,7 @@ import os
 
 from cryptography.fernet import Fernet
 
+from notetool.database import SqliteTable
 from notetool.tool.log import log
 
 local_secret_path = '~/.secret'
@@ -26,50 +27,54 @@ def get_file_md5(path, chunk=1024 * 4):
     return m.hexdigest()
 
 
-class SecretManage(object):
-    def __init__(self, key, value=None, path='default', secret_dir=None, save=True):
-        self.key = key
+class SecretManage(SqliteTable):
+    def __init__(self, secret_dir=None, *args, **kwargs):
         secret_dir = secret_dir or local_secret_path
-
         secret_dir = secret_dir.replace("~", os.environ['HOME'])
-        self.secret_path = '{}/{}/.{}'.format(secret_dir, path, key)
-        self.value = value
+        secret_path = '{}/.secret.db'.format(secret_dir)
 
+        super(SecretManage, self).__init__(secret_path, table_name='secret', *args, **kwargs)
+        self.columns = ['secret_key', 'cate1', 'cate2', 'cate3', 'cate4', 'cate5', 'value']
+        self.create()
+
+    def create(self):
+        self.execute("""
+                        create table if not exists {} (
+                            secret_key            varchar(300)   primary key
+                           ,cate1                 varchar(150)   DEFAULT ('')
+                           ,cate2                 varchar(150)   DEFAULT ('')
+                           ,cate3                 varchar(150)   DEFAULT ('')
+                           ,cate4                 varchar(150)   DEFAULT ('')
+                           ,cate5                 varchar(150)   DEFAULT ('')                                 
+                           ,value                 varchar(1000)  DEFAULT ('')
+                           )
+                        """.format(self.table_name))
+
+    def read(self, cate1, cate2=None, cate3=None, cate4=None, cate5=None, value=None, save=True, ):
         if save:
-            self.write()
+            self.write(value, cate1, cate2, cate3, cate4, cate5)
+        if value is not None:
+            return value
 
-        if self.value is None:
-            self.read()
+        properties = {"cate1": cate1, "cate2": cate2, "cate3": cate3, "cate4": cate4, "cate5": cate5}
+        sql = "select value from table_name where {}".format(' and '.join(self._properties2equal(properties)))
+        results = self.select(sql)
+        for res in results:
+            return res[0]
 
-    def read(self):
-        """
-        从文件读取
-        """
-        if self.value is not None:
-            return self.value
-        try:
-            if os.path.exists(self.secret_path):
-                self.value = open(self.secret_path).read()
-                print("read from local {}".format(self.secret_path))
-        except Exception as e:
-            print("read error ,init {}".format(e))
-        return self.value
-
-    def write(self):
-        """
-        写入到文件
-        """
-        if self.value is None:
+    def write(self, value, cate1, cate2=None, cate3=None, cate4=None, cate5=None):
+        if value is None:
             return
-        try:
-            secret_dir = os.path.dirname(self.secret_path)
-            if not os.path.exists(secret_dir):
-                os.makedirs(secret_dir)
-            with open(self.secret_path, 'w')as f:
-                f.write(self.value)
-                print("write to local {}".format(self.secret_path))
-        except Exception as e:
-            print('error {}'.format(e))
+        key = self.get_secret_key(cate1, cate2, cate3, cate4, cate5)
+        properties = {
+            "secret_key": key,
+            "cate1": cate1, "cate2": cate2, "cate3": cate3, "cate4": cate4, "cate5": cate5, "value": value,
+        }
+
+        self.insert(properties)
+
+    def get_secret_key(self, cate1, cate2=None, cate3=None, cate4=None, cate5=None):
+        return "{}-{}-{}-{}-{}".format(cate1, cate2 or '', cate3 or '', cate4 or '', cate5 or '')
 
     def delete_key(self):
         """
@@ -111,10 +116,3 @@ def decrypt(encrypted_text, cipher_key=None):
     decrypted_text = cipher.decrypt(encrypted_text)
 
     return decrypted_text.decode()
-
-
-def test():
-    text = 'My super secret message'
-    print(encrypt(text))
-    print(encrypt(text))
-    print(decrypt(encrypt(text)))
