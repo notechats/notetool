@@ -3,6 +3,7 @@ import os
 import sqlite3
 import time
 from time import strftime
+from typing import List
 
 import pandas as pd
 
@@ -96,6 +97,14 @@ class SqliteTable(BaseTable):
             print("{}  with error:{}".format(sql, e))
             return
 
+    def execute_without_commit(self, sql):
+        try:
+            rows = self.cursor.execute(sql)
+            return rows
+        except Exception as e:
+            print("{}  with error:{}".format(sql, e))
+            return
+
     def close(self):
         self.cursor.close()
         self.conn.close()
@@ -114,3 +123,14 @@ class SqliteTable(BaseTable):
         self.execute("VACUUM")
         self.logger.info("VACUUM")
         return result
+
+    def vacuum(self):
+        self.execute("VACUUM")
+
+    def insert_list(self, property_list: List[dict]):
+        values = [tuple([properties.get(key, '') for key in self.columns]) for properties in property_list]
+        sql = "insert or ignore into {} values ({})".format(self.table_name, ','.join(['?'] * len(self.columns)))
+
+        self.cursor.executemany(sql, values)
+        self.conn.commit()
+        return True

@@ -45,12 +45,12 @@ class Node(Thread):
                                    active=threading.activeCount(),
                                    item=self.qsize(), ))
 
-    def put(self, obj, index=0):
-        self.queue_list[index].put(obj)
+    def put(self, obj, index=0, block=True, timeout=1):
+        self.queue_list[index].put(obj, block=block, timeout=timeout)
 
-    def get(self, index=0):
+    def get(self, index=0, block=True, timeout=1):
         self.total_list[index] += 1
-        return self.queue_list[index].get()
+        return self.queue_list[index].get(block=block, timeout=timeout)
 
     def qsize(self, index=0):
         return self.queue_list[index].qsize()
