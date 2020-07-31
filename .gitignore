@@ -1,3 +1,4 @@
 .buildozer
 /notetool/app/.buildozer/
 /notetool/app/bin/
+/example/tmp/

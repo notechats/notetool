@@ -76,14 +76,7 @@ class SecretManage(SqliteTable):
     def get_secret_key(self, cate1, cate2=None, cate3=None, cate4=None, cate5=None):
         return "{}-{}-{}-{}-{}".format(cate1, cate2 or '', cate3 or '', cate4 or '', cate5 or '')
 
-    def delete_key(self):
-        """
-        删除
-        """
-        if os.path.exists(self.secret_path):
-            os.remove(self.secret_path)
-
-
+    
 def get_fernet(cipher_key=None):
     """
     从本地拿取加密的key
