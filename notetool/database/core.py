@@ -22,6 +22,7 @@ class BaseTable:
         raise Exception("还没有实现")
 
     def insert(self, properties: dict):
+        properties = self.encode(properties)
         keys, values = self._properties2kv(properties)
 
         sql = """insert or ignore into {} ({}) values ({})""".format(self.table_name, ', '.join(keys),
@@ -29,10 +30,17 @@ class BaseTable:
         return self.execute(sql)
 
     def update(self, properties: dict, condition: dict):
+        properties = self.encode(properties)
         equal = self._properties2equal(properties)
         equal2 = self._properties2equal(condition)
         sql = """update  {} set {} where {}""".format(self.table_name, ', '.join(equal), ' and '.join(equal2))
         return self.execute(sql)
+
+    def decode(self, properties: dict):
+        return properties
+
+    def encode(self, properties: dict):
+        return properties
 
     def count(self, properties: dict):
         properties = properties or {}
@@ -49,8 +57,11 @@ class BaseTable:
             return row[0]
         return 0
 
+    def select_all(self):
+        return self.select("select * from table_name")
+
     def select(self, sql):
-        sql = sql.replace('table_name', self.table_name)
+        sql = self.sql_format(sql)
 
         rows = self.execute(sql)
         return [] if rows is None else [row for row in rows]
@@ -80,6 +91,10 @@ class BaseTable:
                     equals.append("{}={}".format(key, value))
         return equals
 
+    def sql_format(self, sql):
+        sql = sql.replace('table_name', self.table_name)
+        return sql
+
 
 class SqliteTable(BaseTable):
     def __init__(self, db_path, *args, **kwargs):
@@ -108,6 +123,10 @@ class SqliteTable(BaseTable):
     def close(self):
         self.cursor.close()
         self.conn.close()
+
+    def select_pd(self, sql="select * from table_name"):
+        sql = self.sql_format(sql)
+        return pd.read_sql(sql, self.conn)
 
     def save_and_truncate(self):
         result = pd.read_sql("select * from {}".format(self.table_name), self.conn)
