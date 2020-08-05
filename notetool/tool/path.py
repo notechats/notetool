@@ -4,13 +4,27 @@ from notetool.tool import log
 
 logger = log(__name__)
 
-__all__ = ['exists', 'exist_and_create', 'exists_file', 'exists_dir', 'meta', 'list_file', 'LocalPath',
-           'delete_file', 'join_path', 'path_parse', 'path_join', '_file_path', '_file_name'
-           ]
-
 
 def info(msg):
     logger.info(msg)
+
+
+"""
+os.path重构
+"""
+
+
+def rename(src, dst):
+    if os.path.exists(src):
+        return os.rename(src, dst)
+    else:
+        logger.error("{} not exist!".format(src))
+        return
+
+
+"""
+path
+"""
 
 
 def path_parse(path):
