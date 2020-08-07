@@ -100,6 +100,8 @@ class SqliteTable(BaseTable):
     def __init__(self, db_path, *args, **kwargs):
         super(SqliteTable, self).__init__(*args, **kwargs)
         self.db_path = db_path
+        if not os.path.exists(os.path.dirname(self.db_path)):
+            os.makedirs(os.path.dirname(self.db_path))
         self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
         self.cursor = self.conn.cursor()
 
